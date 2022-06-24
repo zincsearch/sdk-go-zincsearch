@@ -1,0 +1,2555 @@
+openapi: 3.0.1
+info:
+  contact:
+    name: Zinc Search
+    url: https://www.zincsearch.com
+  description: Zinc Search engine API documents https://docs.zincsearch.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Zinc Search engine API
+  version: 0.2.4
+servers:
+- url: http://localhost:4080/
+- url: https://localhost:4080/
+security:
+- basicAuth: []
+paths:
+  /api/_analyze:
+    post:
+      operationId: Analyze
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/index.AnalyzeResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Analyze
+      tags:
+      - Index
+      x-codegen-request-body-name: query
+  /api/_bulk:
+    post:
+      operationId: Bulk
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseRecordCount'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Bulk documents
+      tags:
+      - Document
+      x-codegen-request-body-name: query
+  /api/index:
+    get:
+      operationId: List
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/core.Index'
+                type: array
+          description: OK
+      summary: List indexes
+      tags:
+      - Index
+    post:
+      operationId: Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.IndexSimple'
+        description: Index data
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseIndex'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Create index
+      tags:
+      - Index
+      x-codegen-request-body-name: index
+  /api/index/{index}:
+    delete:
+      operationId: Delete
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseIndex'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Delete index
+      tags:
+      - Index
+  /api/index/{index}/refresh:
+    post:
+      operationId: Refresh
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Resfresh index
+      tags:
+      - Index
+  /api/login:
+    post:
+      operationId: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auth.LoginRequest'
+        description: Login credentials
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/auth.LoginResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Login
+      tags:
+      - User
+      x-codegen-request-body-name: login
+  /api/user:
+    get:
+      operationId: List
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/meta.User'
+                type: array
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: List user
+      tags:
+      - User
+    post:
+      operationId: Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.User'
+        description: User data
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseID'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Create user
+      tags:
+      - User
+      x-codegen-request-body-name: user
+    put:
+      operationId: Update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.User'
+        description: User data
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseID'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Update user
+      tags:
+      - User
+      x-codegen-request-body-name: user
+  /api/user/{id}:
+    delete:
+      operationId: Delete
+      parameters:
+      - description: User id
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseID'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Delete user
+      tags:
+      - User
+  /api/{index}/_analyze:
+    post:
+      operationId: AnalyzeIndex
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/index.AnalyzeResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Analyze
+      tags:
+      - Index
+      x-codegen-request-body-name: query
+  /api/{index}/_doc:
+    post:
+      operationId: Index
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Document
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseID'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Create or update document
+      tags:
+      - Document
+      x-codegen-request-body-name: document
+  /api/{index}/_doc/{id}:
+    delete:
+      operationId: Delete
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseDocument'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Delete document
+      tags:
+      - Document
+    put:
+      operationId: IndexWithID
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Document
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseID'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Create or update document with id
+      tags:
+      - Document
+      x-codegen-request-body-name: document
+  /api/{index}/_mapping:
+    get:
+      operationId: GetMapping
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Get index mappings
+      tags:
+      - Index
+    put:
+      operationId: SetMapping
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.Mappings'
+        description: Mapping
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Set index mappings
+      tags:
+      - Index
+      x-codegen-request-body-name: mapping
+  /api/{index}/_search:
+    post:
+      operationId: SearchV1
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v1.ZincQuery'
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1.SearchResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Search V1
+      tags:
+      - Search
+      x-codegen-request-body-name: query
+  /api/{index}/_settings:
+    get:
+      operationId: GetSettings
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Get index settings
+      tags:
+      - Index
+    put:
+      operationId: SetSettings
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.IndexSettings'
+        description: Settings
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Set index Settings
+      tags:
+      - Index
+      x-codegen-request-body-name: settings
+  /api/{index}/_update/{id}:
+    post:
+      operationId: Update
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: ID
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Document
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseID'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Update document with id
+      tags:
+      - Document
+      x-codegen-request-body-name: document
+  /es/_bulk:
+    post:
+      operationId: ESBulk
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: ES bulk documents
+      tags:
+      - Document
+      x-codegen-request-body-name: query
+  /es/_index_template:
+    get:
+      operationId: ListTemplates
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/meta.Template'
+                type: array
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: List index teplates
+      tags:
+      - Index
+    post:
+      operationId: CreateTemplate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.IndexTemplate'
+        description: Template data
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseTemplate'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Create update index template
+      tags:
+      - Index
+      x-codegen-request-body-name: template
+  /es/_index_template/{name}:
+    delete:
+      operationId: DeleteTemplate
+      parameters:
+      - description: Template
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Delete template
+      tags:
+      - Index
+    get:
+      operationId: GetTemplate
+      parameters:
+      - description: Template
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.IndexTemplate'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Get index template
+      tags:
+      - Index
+    put:
+      operationId: UpdateTemplate
+      parameters:
+      - description: Template
+        explode: false
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.IndexTemplate'
+        description: Template data
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseTemplate'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Create update index template
+      tags:
+      - Index
+      x-codegen-request-body-name: template
+  /es/_msearch:
+    post:
+      operationId: MSearch
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.SearchResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Search V2 MultipleSearch for compatible ES
+      tags:
+      - Search
+      x-codegen-request-body-name: query
+  /es/{index}/_search:
+    post:
+      operationId: Search
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.ZincQuery'
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.SearchResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Search V2 DSL for compatible ES
+      tags:
+      - Search
+      x-codegen-request-body-name: query
+  /healthz:
+    get:
+      operationId: Healthz
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HealthzResponse'
+          description: OK
+      summary: Get healthz
+  /version:
+    get:
+      operationId: Version
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.VersionResponse'
+          description: OK
+      summary: Get version
+components:
+  schemas:
+    aggregation.HistogramBound:
+      properties:
+        max:
+          description: maximum
+          type: number
+        min:
+          description: minimum
+          type: number
+      type: object
+    auth.LoginRequest:
+      properties:
+        _id:
+          type: string
+        password:
+          type: string
+      type: object
+    auth.LoginResponse:
+      example:
+        validated: true
+        user:
+          role: role
+          name: name
+          _id: _id
+      properties:
+        user:
+          $ref: '#/components/schemas/auth.LoginUser'
+        validated:
+          type: boolean
+      type: object
+    auth.LoginUser:
+      example:
+        role: role
+        name: name
+        _id: _id
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+      type: object
+    core.Index:
+      example:
+        storage_type: storage_type
+        settings:
+          number_of_shards: 5
+          analysis:
+            filter: "{}"
+            char_filter: "{}"
+            analyzer:
+              key:
+                filter:
+                - filter
+                - filter
+                char_filter:
+                - char_filter
+                - char_filter
+                lowercase: true
+                pattern: pattern
+                token_filter:
+                - token_filter
+                - token_filter
+                type: type
+                stopwords:
+                - stopwords
+                - stopwords
+                tokenizer: tokenizer
+            token_filter: "{}"
+            tokenizer: "{}"
+          number_of_replicas: 5
+        shards:
+        - doc_time_max: 9
+          doc_num: 7
+          storage_size: 4
+          doc_time_min: 3
+          id: 2
+        - doc_time_max: 9
+          doc_num: 7
+          storage_size: 4
+          doc_time_min: 3
+          id: 2
+        mappings:
+          properties:
+            key:
+              search_analyzer: search_analyzer
+              analyzer: analyzer
+              aggregatable: true
+              format: format
+              index: true
+              highlightable: true
+              sortable: true
+              store: true
+              type: type
+        doc_time_max: 6
+        doc_num: 0
+        name: name
+        storage_size: 7
+        update_at: update_at
+        doc_time_min: 1
+        create_at: create_at
+        shard_num: 2
+      properties:
+        create_at:
+          type: string
+        doc_num:
+          type: integer
+        doc_time_max:
+          type: integer
+        doc_time_min:
+          type: integer
+        mappings:
+          $ref: '#/components/schemas/meta.Mappings'
+        name:
+          type: string
+        settings:
+          $ref: '#/components/schemas/meta.IndexSettings'
+        shard_num:
+          type: integer
+        shards:
+          items:
+            $ref: '#/components/schemas/meta.IndexShard'
+          type: array
+        storage_size:
+          type: integer
+        storage_type:
+          type: string
+        update_at:
+          type: string
+      type: object
+    index.AnalyzeResponse:
+      example:
+        tokens:
+        - end_offset: 0
+          position: 6
+          start_offset: 1
+          keyword: true
+          type: type
+          token: token
+        - end_offset: 0
+          position: 6
+          start_offset: 1
+          keyword: true
+          type: type
+          token: token
+      properties:
+        tokens:
+          items:
+            $ref: '#/components/schemas/index.AnalyzeResponseToken'
+          type: array
+      type: object
+    index.AnalyzeResponseToken:
+      example:
+        end_offset: 0
+        position: 6
+        start_offset: 1
+        keyword: true
+        type: type
+        token: token
+      properties:
+        end_offset:
+          type: integer
+        keyword:
+          type: boolean
+        position:
+          type: integer
+        start_offset:
+          type: integer
+        token:
+          type: string
+        type:
+          type: string
+      type: object
+    meta.AggregationAutoDateHistogram:
+      properties:
+        buckets:
+          type: integer
+        field:
+          type: string
+        format:
+          description: format key_as_string
+          type: string
+        keyed:
+          type: boolean
+        minimum_interval:
+          description: "minute,hour,day,week,month,quarter,year"
+          type: string
+        time_zone:
+          description: time_zone
+          type: string
+      type: object
+    meta.AggregationDateHistogram:
+      properties:
+        calendar_interval:
+          description: "minute,hour,day,week,month,quarter,year"
+          type: string
+        extended_bounds:
+          $ref: '#/components/schemas/aggregation.HistogramBound'
+        field:
+          type: string
+        fixed_interval:
+          description: "ms,s,m,h,d"
+          type: string
+        format:
+          description: format key_as_string
+          type: string
+        hard_bounds:
+          $ref: '#/components/schemas/aggregation.HistogramBound'
+        interval:
+          description: "ms,s,m,h,d"
+          type: string
+        keyed:
+          type: boolean
+        min_doc_count:
+          type: integer
+        size:
+          type: integer
+        time_zone:
+          description: time_zone
+          type: string
+      type: object
+    meta.AggregationDateRange:
+      properties:
+        field:
+          type: string
+        format:
+          description: "format the `to` and `from` values to `_as_string`, and used\
+            \ to format `keyed response`"
+          type: string
+        keyed:
+          type: boolean
+        ranges:
+          description: refer
+          items:
+            $ref: '#/components/schemas/meta.DateRange'
+          type: array
+        time_zone:
+          description: refer
+          type: string
+      type: object
+    meta.AggregationHistogram:
+      properties:
+        extended_bounds:
+          $ref: '#/components/schemas/aggregation.HistogramBound'
+        field:
+          type: string
+        hard_bounds:
+          $ref: '#/components/schemas/aggregation.HistogramBound'
+        interval:
+          type: number
+        keyed:
+          type: boolean
+        min_doc_count:
+          type: integer
+        offset:
+          type: number
+        size:
+          type: integer
+      type: object
+    meta.AggregationIPRange:
+      properties:
+        field:
+          type: string
+        keyed:
+          type: boolean
+        ranges:
+          items:
+            $ref: '#/components/schemas/meta.IPRange'
+          type: array
+      type: object
+    meta.AggregationMetric:
+      properties:
+        field:
+          type: string
+        weight_field:
+          description: Field name to be used for setting weight for primary field
+            for weighted average aggregation
+          type: string
+      type: object
+    meta.AggregationRange:
+      properties:
+        field:
+          type: string
+        keyed:
+          type: boolean
+        ranges:
+          items:
+            $ref: '#/components/schemas/meta.Range'
+          type: array
+      type: object
+    meta.AggregationResponse:
+      example:
+        buckets: "{}"
+        interval: interval
+        value: "{}"
+      properties:
+        buckets:
+          description: slice or map
+          type: object
+        interval:
+          description: support for auto_date_histogram_aggregation
+          type: string
+        value:
+          type: object
+      type: object
+    meta.Aggregations:
+      properties:
+        aggs:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.Aggregations'
+          description: nested aggregations
+          type: object
+        auto_date_histogram:
+          $ref: '#/components/schemas/meta.AggregationAutoDateHistogram'
+        avg:
+          $ref: '#/components/schemas/meta.AggregationMetric'
+        cardinality:
+          $ref: '#/components/schemas/meta.AggregationMetric'
+        count:
+          $ref: '#/components/schemas/meta.AggregationMetric'
+        date_histogram:
+          $ref: '#/components/schemas/meta.AggregationDateHistogram'
+        date_range:
+          $ref: '#/components/schemas/meta.AggregationDateRange'
+        histogram:
+          $ref: '#/components/schemas/meta.AggregationHistogram'
+        ip_range:
+          $ref: '#/components/schemas/meta.AggregationIPRange'
+        max:
+          $ref: '#/components/schemas/meta.AggregationMetric'
+        min:
+          $ref: '#/components/schemas/meta.AggregationMetric'
+        range:
+          $ref: '#/components/schemas/meta.AggregationRange'
+        sum:
+          $ref: '#/components/schemas/meta.AggregationMetric'
+        terms:
+          $ref: '#/components/schemas/meta.AggregationsTerms'
+        weighted_avg:
+          $ref: '#/components/schemas/meta.AggregationMetric'
+      type: object
+    meta.AggregationsTerms:
+      properties:
+        field:
+          type: string
+        order:
+          additionalProperties:
+            type: string
+          description: "{ \"_count\": \"asc\" }"
+          type: object
+        size:
+          type: integer
+      type: object
+    meta.Analyzer:
+      example:
+        filter:
+        - filter
+        - filter
+        char_filter:
+        - char_filter
+        - char_filter
+        lowercase: true
+        pattern: pattern
+        token_filter:
+        - token_filter
+        - token_filter
+        type: type
+        stopwords:
+        - stopwords
+        - stopwords
+        tokenizer: tokenizer
+      properties:
+        char_filter:
+          items:
+            type: string
+          type: array
+        filter:
+          description: "compatibility with es, alias for TokenFilter"
+          items:
+            type: string
+          type: array
+        lowercase:
+          description: for type=pattern
+          type: boolean
+        pattern:
+          description: for type=pattern
+          type: string
+        stopwords:
+          description: "for type=pattern,standard,stop"
+          items:
+            type: string
+          type: array
+        token_filter:
+          items:
+            type: string
+          type: array
+        tokenizer:
+          type: string
+        type:
+          description: options for compatible
+          type: string
+      type: object
+    meta.BoolQuery:
+      properties:
+        filter:
+          description: "query, [query1, query2]"
+          items:
+            $ref: '#/components/schemas/meta.Query'
+          type: array
+        minimum_should_match:
+          description: only for should
+          type: number
+        must:
+          description: "query, [query1, query2]"
+          items:
+            $ref: '#/components/schemas/meta.Query'
+          type: array
+        must_not:
+          description: "query, [query1, query2]"
+          items:
+            $ref: '#/components/schemas/meta.Query'
+          type: array
+        should:
+          description: "query, [query1, query2]"
+          items:
+            $ref: '#/components/schemas/meta.Query'
+          type: array
+      type: object
+    meta.DateRange:
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+      type: object
+    meta.ExistsQuery:
+      properties:
+        field:
+          type: string
+      type: object
+    meta.FuzzyQuery:
+      properties:
+        boost:
+          type: number
+        fuzziness:
+          description: "auto, 1,2,3,n"
+          type: object
+        prefix_length:
+          type: number
+        value:
+          type: string
+      type: object
+    meta.HTTPResponse:
+      example:
+        message: message
+      properties:
+        message:
+          type: string
+      type: object
+    meta.HTTPResponseDocument:
+      example:
+        index: index
+        id: id
+        message: message
+      properties:
+        id:
+          type: string
+        index:
+          type: string
+        message:
+          type: string
+      type: object
+    meta.HTTPResponseError:
+      properties:
+        error:
+          type: string
+      type: object
+    meta.HTTPResponseID:
+      example:
+        id: id
+        message: message
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+      type: object
+    meta.HTTPResponseIndex:
+      example:
+        storage_type: storage_type
+        index: index
+        message: message
+      properties:
+        index:
+          type: string
+        message:
+          type: string
+        storage_type:
+          type: string
+      type: object
+    meta.HTTPResponseRecordCount:
+      example:
+        record_count: 0
+        message: message
+      properties:
+        message:
+          type: string
+        record_count:
+          type: integer
+      type: object
+    meta.HTTPResponseTemplate:
+      example:
+        template: template
+        message: message
+      properties:
+        message:
+          type: string
+        template:
+          type: string
+      type: object
+    meta.HealthzResponse:
+      example:
+        status: status
+      properties:
+        status:
+          type: string
+      type: object
+    meta.Highlight:
+      properties:
+        fields:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.Highlight'
+          type: object
+        fragment_size:
+          type: integer
+        number_of_fragments:
+          type: integer
+        post_tags:
+          items:
+            type: string
+          type: array
+        pre_tags:
+          items:
+            type: string
+          type: array
+      type: object
+    meta.Hit:
+      example:
+        highlight: "{}"
+        '@timestamp': '@timestamp'
+        _index: _index
+        _type: _type
+        _source: "{}"
+        _id: _id
+        _score: 5.637376656633329
+        fields: "{}"
+      properties:
+        '@timestamp':
+          type: string
+        _id:
+          type: string
+        _index:
+          type: string
+        _score:
+          type: number
+        _source:
+          type: object
+        _type:
+          type: string
+        fields:
+          properties: {}
+          type: object
+        highlight:
+          properties: {}
+          type: object
+      type: object
+    meta.Hits:
+      example:
+        hits:
+        - highlight: "{}"
+          '@timestamp': '@timestamp'
+          _index: _index
+          _type: _type
+          _source: "{}"
+          _id: _id
+          _score: 5.637376656633329
+          fields: "{}"
+        - highlight: "{}"
+          '@timestamp': '@timestamp'
+          _index: _index
+          _type: _type
+          _source: "{}"
+          _id: _id
+          _score: 5.637376656633329
+          fields: "{}"
+        total:
+          value: 7
+        max_score: 2.3021358869347655
+      properties:
+        hits:
+          items:
+            $ref: '#/components/schemas/meta.Hit'
+          type: array
+        max_score:
+          type: number
+        total:
+          $ref: '#/components/schemas/meta.Total'
+      type: object
+    meta.IPRange:
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+      type: object
+    meta.IdsQuery:
+      properties:
+        values:
+          items:
+            type: string
+          type: array
+      type: object
+    meta.IndexAnalysis:
+      example:
+        filter: "{}"
+        char_filter: "{}"
+        analyzer:
+          key:
+            filter:
+            - filter
+            - filter
+            char_filter:
+            - char_filter
+            - char_filter
+            lowercase: true
+            pattern: pattern
+            token_filter:
+            - token_filter
+            - token_filter
+            type: type
+            stopwords:
+            - stopwords
+            - stopwords
+            tokenizer: tokenizer
+        token_filter: "{}"
+        tokenizer: "{}"
+      properties:
+        analyzer:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.Analyzer'
+          type: object
+        char_filter:
+          properties: {}
+          type: object
+        filter:
+          description: "compatibility with es, alias for TokenFilter"
+          properties: {}
+          type: object
+        token_filter:
+          properties: {}
+          type: object
+        tokenizer:
+          properties: {}
+          type: object
+      type: object
+    meta.IndexSettings:
+      example:
+        number_of_shards: 5
+        analysis:
+          filter: "{}"
+          char_filter: "{}"
+          analyzer:
+            key:
+              filter:
+              - filter
+              - filter
+              char_filter:
+              - char_filter
+              - char_filter
+              lowercase: true
+              pattern: pattern
+              token_filter:
+              - token_filter
+              - token_filter
+              type: type
+              stopwords:
+              - stopwords
+              - stopwords
+              tokenizer: tokenizer
+          token_filter: "{}"
+          tokenizer: "{}"
+        number_of_replicas: 5
+      properties:
+        analysis:
+          $ref: '#/components/schemas/meta.IndexAnalysis'
+        number_of_replicas:
+          type: integer
+        number_of_shards:
+          type: integer
+      type: object
+    meta.IndexShard:
+      example:
+        doc_time_max: 9
+        doc_num: 7
+        storage_size: 4
+        doc_time_min: 3
+        id: 2
+      properties:
+        doc_num:
+          type: integer
+        doc_time_max:
+          type: integer
+        doc_time_min:
+          type: integer
+        id:
+          type: integer
+        storage_size:
+          type: integer
+      type: object
+    meta.IndexSimple:
+      properties:
+        mappings:
+          properties: {}
+          type: object
+        name:
+          type: string
+        settings:
+          $ref: '#/components/schemas/meta.IndexSettings'
+        storage_type:
+          type: string
+      type: object
+    meta.IndexTemplate:
+      example:
+        template:
+          settings:
+            number_of_shards: 5
+            analysis:
+              filter: "{}"
+              char_filter: "{}"
+              analyzer:
+                key:
+                  filter:
+                  - filter
+                  - filter
+                  char_filter:
+                  - char_filter
+                  - char_filter
+                  lowercase: true
+                  pattern: pattern
+                  token_filter:
+                  - token_filter
+                  - token_filter
+                  type: type
+                  stopwords:
+                  - stopwords
+                  - stopwords
+                  tokenizer: tokenizer
+              token_filter: "{}"
+              tokenizer: "{}"
+            number_of_replicas: 5
+          mappings:
+            properties:
+              key:
+                search_analyzer: search_analyzer
+                analyzer: analyzer
+                aggregatable: true
+                format: format
+                index: true
+                highlightable: true
+                sortable: true
+                store: true
+                type: type
+        updated_at: updated_at
+        created_at: created_at
+        index_patterns:
+        - index_patterns
+        - index_patterns
+        priority: 0
+      properties:
+        created_at:
+          type: string
+        index_patterns:
+          items:
+            type: string
+          type: array
+        priority:
+          description: highest priority is chosen
+          type: integer
+        template:
+          $ref: '#/components/schemas/meta.TemplateTemplate'
+        updated_at:
+          type: string
+      type: object
+    meta.Mappings:
+      example:
+        properties:
+          key:
+            search_analyzer: search_analyzer
+            analyzer: analyzer
+            aggregatable: true
+            format: format
+            index: true
+            highlightable: true
+            sortable: true
+            store: true
+            type: type
+      properties:
+        properties:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.Property'
+          type: object
+      type: object
+    meta.MatchAllQuery:
+      type: object
+    meta.MatchBoolPrefixQuery:
+      properties:
+        analyzer:
+          type: string
+        boost:
+          type: number
+        query:
+          type: string
+      type: object
+    meta.MatchNoneQuery:
+      type: object
+    meta.MatchPhrasePrefixQuery:
+      properties:
+        analyzer:
+          type: string
+        boost:
+          type: number
+        query:
+          type: string
+      type: object
+    meta.MatchPhraseQuery:
+      properties:
+        analyzer:
+          type: string
+        boost:
+          type: number
+        query:
+          type: string
+      type: object
+    meta.MatchQuery:
+      properties:
+        analyzer:
+          type: string
+        boost:
+          type: number
+        fuzziness:
+          description: "auto, 1,2,3,n"
+          type: object
+        operator:
+          description: "or(default), and"
+          type: string
+        prefix_length:
+          type: number
+        query:
+          type: string
+      type: object
+    meta.MultiMatchQuery:
+      properties:
+        analyzer:
+          type: string
+        boost:
+          type: number
+        fields:
+          items:
+            type: string
+          type: array
+        minimum_should_match:
+          type: number
+        operator:
+          description: "or(default), and"
+          type: string
+        query:
+          type: string
+        type:
+          description: "best_fields(default), most_fields, cross_fields, phrase, phrase_prefix,\
+            \ bool_prefix"
+          type: string
+      type: object
+    meta.PrefixQuery:
+      properties:
+        boost:
+          type: number
+        value:
+          description: You can speed up prefix queries using the index_prefixes mapping
+            parameter.
+          type: string
+      type: object
+    meta.Property:
+      example:
+        search_analyzer: search_analyzer
+        analyzer: analyzer
+        aggregatable: true
+        format: format
+        index: true
+        highlightable: true
+        sortable: true
+        store: true
+        type: type
+      properties:
+        aggregatable:
+          type: boolean
+        analyzer:
+          type: string
+        format:
+          description: date format yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis
+          type: string
+        highlightable:
+          type: boolean
+        index:
+          type: boolean
+        search_analyzer:
+          type: string
+        sortable:
+          type: boolean
+        store:
+          type: boolean
+        type:
+          description: "text, keyword, date, numeric, boolean, geo_point"
+          type: string
+      type: object
+    meta.Query:
+      properties:
+        bool:
+          $ref: '#/components/schemas/meta.BoolQuery'
+        exists:
+          $ref: '#/components/schemas/meta.ExistsQuery'
+        fuzzy:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.FuzzyQuery'
+          description: "simple, PrefixQuery"
+          type: object
+        ids:
+          $ref: '#/components/schemas/meta.IdsQuery'
+        match:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.MatchQuery'
+          description: "simple, MatchQuery"
+          type: object
+        match_all:
+          type: object
+        match_bool_prefix:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.MatchBoolPrefixQuery'
+          description: "simple, MatchBoolPrefixQuery"
+          type: object
+        match_none:
+          type: object
+        match_phrase:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.MatchPhraseQuery'
+          description: "simple, MatchPhraseQuery"
+          type: object
+        match_phrase_prefix:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.MatchPhrasePrefixQuery'
+          description: "simple, MatchPhrasePrefixQuery"
+          type: object
+        multi_match:
+          $ref: '#/components/schemas/meta.MultiMatchQuery'
+        prefix:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.PrefixQuery'
+          description: "."
+          type: object
+        query_string:
+          $ref: '#/components/schemas/meta.QueryStringQuery'
+        range:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.RangeQuery'
+          description: "simple, FuzzyQuery"
+          type: object
+        regexp:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.RegexpQuery'
+          description: "simple, FuzzyQuery"
+          type: object
+        simple_query_string:
+          $ref: '#/components/schemas/meta.SimpleQueryStringQuery'
+        term:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.TermQuery'
+          description: "simple, TermQuery"
+          type: object
+        terms:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.TermsQuery'
+          description: "."
+          type: object
+        wildcard:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.WildcardQuery'
+          description: "simple, WildcardQuery"
+          type: object
+      type: object
+    meta.QueryStringQuery:
+      properties:
+        analyzer:
+          type: string
+        boost:
+          type: number
+        default_field:
+          type: string
+        default_operator:
+          description: "or(default), and"
+          type: string
+        fields:
+          items:
+            type: string
+          type: array
+        query:
+          type: string
+      type: object
+    meta.Range:
+      properties:
+        from:
+          type: number
+        to:
+          type: number
+      type: object
+    meta.RangeQuery:
+      properties:
+        boost:
+          type: number
+        format:
+          description: Date format used to convert date values in the query.
+          type: string
+        gt:
+          description: "string, float64"
+          type: string
+        gte:
+          description: "string, float64"
+          type: string
+        lt:
+          description: "string, float64"
+          type: string
+        lte:
+          description: "string, float64"
+          type: string
+        time_zone:
+          description: used to convert date values in the query to UTC.
+          type: string
+      type: object
+    meta.RegexpQuery:
+      properties:
+        boost:
+          type: number
+        flags:
+          type: string
+        value:
+          type: string
+      type: object
+    meta.SearchResponse:
+      example:
+        _shards:
+          total: 5
+          failed: 0
+          skipped: 6
+          successful: 1
+        hits:
+          hits:
+          - highlight: "{}"
+            '@timestamp': '@timestamp'
+            _index: _index
+            _type: _type
+            _source: "{}"
+            _id: _id
+            _score: 5.637376656633329
+            fields: "{}"
+          - highlight: "{}"
+            '@timestamp': '@timestamp'
+            _index: _index
+            _type: _type
+            _source: "{}"
+            _id: _id
+            _score: 5.637376656633329
+            fields: "{}"
+          total:
+            value: 7
+          max_score: 2.3021358869347655
+        took: 9
+        timed_out: true
+        error: error
+        aggregations:
+          key:
+            buckets: "{}"
+            interval: interval
+            value: "{}"
+      properties:
+        _shards:
+          $ref: '#/components/schemas/meta.Shards'
+        aggregations:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.AggregationResponse'
+          type: object
+        error:
+          type: string
+        hits:
+          $ref: '#/components/schemas/meta.Hits'
+        timed_out:
+          type: boolean
+        took:
+          description: Time it took to generate the response
+          type: integer
+      type: object
+    meta.Shards:
+      example:
+        total: 5
+        failed: 0
+        skipped: 6
+        successful: 1
+      properties:
+        failed:
+          type: integer
+        skipped:
+          type: integer
+        successful:
+          type: integer
+        total:
+          type: integer
+      type: object
+    meta.SimpleQueryStringQuery:
+      properties:
+        all_fields:
+          type: boolean
+        analyzer:
+          type: string
+        boost:
+          type: number
+        default_operator:
+          description: "or(default), and"
+          type: string
+        fields:
+          items:
+            type: string
+          type: array
+        query:
+          type: string
+      type: object
+    meta.Template:
+      example:
+        index_template:
+          template:
+            settings:
+              number_of_shards: 5
+              analysis:
+                filter: "{}"
+                char_filter: "{}"
+                analyzer:
+                  key:
+                    filter:
+                    - filter
+                    - filter
+                    char_filter:
+                    - char_filter
+                    - char_filter
+                    lowercase: true
+                    pattern: pattern
+                    token_filter:
+                    - token_filter
+                    - token_filter
+                    type: type
+                    stopwords:
+                    - stopwords
+                    - stopwords
+                    tokenizer: tokenizer
+                token_filter: "{}"
+                tokenizer: "{}"
+              number_of_replicas: 5
+            mappings:
+              properties:
+                key:
+                  search_analyzer: search_analyzer
+                  analyzer: analyzer
+                  aggregatable: true
+                  format: format
+                  index: true
+                  highlightable: true
+                  sortable: true
+                  store: true
+                  type: type
+          updated_at: updated_at
+          created_at: created_at
+          index_patterns:
+          - index_patterns
+          - index_patterns
+          priority: 0
+        name: name
+      properties:
+        index_template:
+          $ref: '#/components/schemas/meta.IndexTemplate'
+        name:
+          type: string
+      type: object
+    meta.TemplateTemplate:
+      example:
+        settings:
+          number_of_shards: 5
+          analysis:
+            filter: "{}"
+            char_filter: "{}"
+            analyzer:
+              key:
+                filter:
+                - filter
+                - filter
+                char_filter:
+                - char_filter
+                - char_filter
+                lowercase: true
+                pattern: pattern
+                token_filter:
+                - token_filter
+                - token_filter
+                type: type
+                stopwords:
+                - stopwords
+                - stopwords
+                tokenizer: tokenizer
+            token_filter: "{}"
+            tokenizer: "{}"
+          number_of_replicas: 5
+        mappings:
+          properties:
+            key:
+              search_analyzer: search_analyzer
+              analyzer: analyzer
+              aggregatable: true
+              format: format
+              index: true
+              highlightable: true
+              sortable: true
+              store: true
+              type: type
+      properties:
+        mappings:
+          $ref: '#/components/schemas/meta.Mappings'
+        settings:
+          $ref: '#/components/schemas/meta.IndexSettings'
+      type: object
+    meta.TermQuery:
+      properties:
+        boost:
+          type: number
+        case_insensitive:
+          type: boolean
+        value:
+          type: string
+      type: object
+    meta.TermsQuery:
+      type: object
+    meta.Total:
+      example:
+        value: 7
+      properties:
+        value:
+          description: Count of documents returned
+          type: integer
+      type: object
+    meta.User:
+      example:
+        password: password
+        role: role
+        salt: salt
+        updated_at: updated_at
+        name: name
+        created_at: created_at
+        _id: _id
+      properties:
+        _id:
+          type: string
+        created_at:
+          type: string
+        name:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+        salt:
+          type: string
+        updated_at:
+          type: string
+      type: object
+    meta.VersionResponse:
+      example:
+        build_date: build_date
+        build: build
+        branch: branch
+        version: version
+        commit_hash: commit_hash
+      properties:
+        branch:
+          type: string
+        build:
+          type: string
+        build_date:
+          type: string
+        commit_hash:
+          type: string
+        version:
+          type: string
+      type: object
+    meta.WildcardQuery:
+      properties:
+        boost:
+          type: number
+        value:
+          type: string
+      type: object
+    meta.ZincQuery:
+      properties:
+        _source:
+          description: "true, false, [\"field1\", \"field2.*\"]"
+          items:
+            type: string
+          type: array
+        aggs:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.Aggregations'
+          type: object
+        explain:
+          type: boolean
+        fields:
+          description: "[\"field1\", \"field2.*\", {\"field\": \"fieldName\", \"format\"\
+            : \"epoch_millis\"}]"
+          items:
+            type: string
+          type: array
+        from:
+          type: integer
+        highlight:
+          $ref: '#/components/schemas/meta.Highlight'
+        query:
+          $ref: '#/components/schemas/meta.Query'
+        size:
+          type: integer
+        sort:
+          description: "\"_sorce\", [\"+Year\",\"-Year\", {\"Year\": \"desc\"}, \"\
+            Date\": {\"order\": \"asc\"\", \"format\": \"yyyy-MM-dd\"}}\"}]"
+          items:
+            type: string
+          type: array
+        timeout:
+          type: integer
+        track_total_hits:
+          type: boolean
+      type: object
+    v1.AggregationBucket:
+      example:
+        doc_count: 0
+        aggregations:
+          key: null
+        key: key
+      properties:
+        aggregations:
+          additionalProperties:
+            $ref: '#/components/schemas/v1.AggregationResponse'
+          type: object
+        doc_count:
+          type: integer
+        key:
+          type: string
+      type: object
+    v1.AggregationDateRange:
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+      type: object
+    v1.AggregationNumberRange:
+      properties:
+        from:
+          type: number
+        to:
+          type: number
+      type: object
+    v1.AggregationParams:
+      properties:
+        agg_type:
+          type: string
+        aggs:
+          additionalProperties:
+            $ref: '#/components/schemas/v1.AggregationParams'
+          type: object
+        date_ranges:
+          items:
+            $ref: '#/components/schemas/v1.AggregationDateRange'
+          type: array
+        field:
+          type: string
+        ranges:
+          items:
+            $ref: '#/components/schemas/v1.AggregationNumberRange'
+          type: array
+        size:
+          type: integer
+        weight_field:
+          description: Field name to be used for setting weight for primary field
+            for weighted average aggregation
+          type: string
+      type: object
+    v1.AggregationResponse:
+      example:
+        buckets:
+        - doc_count: 0
+          aggregations:
+            key: null
+          key: key
+        - doc_count: 0
+          aggregations:
+            key: null
+          key: key
+        value: "{}"
+      properties:
+        buckets:
+          items:
+            $ref: '#/components/schemas/v1.AggregationBucket'
+          type: array
+        value:
+          type: object
+      type: object
+    v1.Hit:
+      example:
+        '@timestamp': '@timestamp'
+        _index: _index
+        _type: _type
+        _source: "{}"
+        _id: _id
+        _score: 6.027456183070403
+      properties:
+        '@timestamp':
+          type: string
+        _id:
+          type: string
+        _index:
+          type: string
+        _score:
+          type: number
+        _source:
+          type: object
+        _type:
+          type: string
+      type: object
+    v1.Hits:
+      example:
+        hits:
+        - '@timestamp': '@timestamp'
+          _index: _index
+          _type: _type
+          _source: "{}"
+          _id: _id
+          _score: 6.027456183070403
+        - '@timestamp': '@timestamp'
+          _index: _index
+          _type: _type
+          _source: "{}"
+          _id: _id
+          _score: 6.027456183070403
+        total:
+          value: 5
+        max_score: 1.4658129805029452
+      properties:
+        hits:
+          items:
+            $ref: '#/components/schemas/v1.Hit'
+          type: array
+        max_score:
+          type: number
+        total:
+          $ref: '#/components/schemas/v1.Total'
+      type: object
+    v1.QueryHighlight:
+      properties:
+        fields:
+          items:
+            type: string
+          type: array
+        style:
+          type: string
+      type: object
+    v1.QueryParams:
+      properties:
+        boost:
+          type: integer
+        end_time:
+          type: string
+        field:
+          type: string
+        start_time:
+          type: string
+        term:
+          type: string
+        terms:
+          description: For multi phrase query
+          items:
+            items:
+              type: string
+            type: array
+          type: array
+      type: object
+    v1.SearchResponse:
+      example:
+        hits:
+          hits:
+          - '@timestamp': '@timestamp'
+            _index: _index
+            _type: _type
+            _source: "{}"
+            _id: _id
+            _score: 6.027456183070403
+          - '@timestamp': '@timestamp'
+            _index: _index
+            _type: _type
+            _source: "{}"
+            _id: _id
+            _score: 6.027456183070403
+          total:
+            value: 5
+          max_score: 1.4658129805029452
+        took: 5
+        timed_out: true
+        error: error
+        aggregations:
+          key:
+            buckets:
+            - doc_count: 0
+              aggregations:
+                key: null
+              key: key
+            - doc_count: 0
+              aggregations:
+                key: null
+              key: key
+            value: "{}"
+      properties:
+        aggregations:
+          additionalProperties:
+            $ref: '#/components/schemas/v1.AggregationResponse'
+          type: object
+        error:
+          type: string
+        hits:
+          $ref: '#/components/schemas/v1.Hits'
+        timed_out:
+          type: boolean
+        took:
+          description: Time it took to generate the response
+          type: integer
+      type: object
+    v1.Total:
+      example:
+        value: 5
+      properties:
+        value:
+          description: Count of documents returned
+          type: integer
+      type: object
+    v1.ZincQuery:
+      properties:
+        _source:
+          items:
+            type: string
+          type: array
+        aggs:
+          additionalProperties:
+            $ref: '#/components/schemas/v1.AggregationParams'
+          type: object
+        explain:
+          type: boolean
+        from:
+          type: integer
+        highlight:
+          $ref: '#/components/schemas/v1.QueryHighlight'
+        max_results:
+          type: integer
+        query:
+          $ref: '#/components/schemas/v1.QueryParams'
+        search_type:
+          description: "SearchType is the type of search to perform. Can be match,\
+            \ match_phrase, query_string, etc"
+          type: string
+        sort_fields:
+          items:
+            type: string
+          type: array
+      type: object
+  securitySchemes:
+    basicAuth:
+      scheme: basic
+      type: http
+x-original-swagger-version: "2.0"
