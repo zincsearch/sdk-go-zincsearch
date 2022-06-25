@@ -11,5 +11,3 @@ require (
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 )
-
-replace github.com/zinclabs/sdk-go-zincsearch => ../../go
