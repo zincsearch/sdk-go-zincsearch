@@ -2,7 +2,7 @@ module github.com/zinclabs/client/examples/go
 
 go 1.18
 
-require github.com/zinclabs/sdk-go-zincsearch v0.2.4
+require github.com/zinclabs/sdk-go-zincsearch v0.2.7
 
 require (
 	github.com/golang/protobuf v1.4.2 // indirect

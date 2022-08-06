@@ -6,12 +6,14 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Aggregatable** | Pointer to **bool** |  | [optional] 
 **Analyzer** | Pointer to **string** |  | [optional] 
+**Fields** | Pointer to [**map[string]MetaProperty**](MetaProperty.md) | Fields allow the same string value to be indexed in multiple ways for different purposes, such as one field for search and a multi-field for sorting and aggregations, or the same string value analyzed by different analyzers. If the Fields property is defined within a sub-field, it will be ignored.  Currently, only \&quot;text\&quot; fields support the Fields parameter. | [optional] 
 **Format** | Pointer to **string** | date format yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis | [optional] 
 **Highlightable** | Pointer to **bool** |  | [optional] 
 **Index** | Pointer to **bool** |  | [optional] 
 **SearchAnalyzer** | Pointer to **string** |  | [optional] 
 **Sortable** | Pointer to **bool** |  | [optional] 
 **Store** | Pointer to **bool** |  | [optional] 
+**TimeZone** | Pointer to **string** | date format time_zone | [optional] 
 **Type** | Pointer to **string** | text, keyword, date, numeric, boolean, geo_point | [optional] 
 
 ## Methods
@@ -82,6 +84,31 @@ SetAnalyzer sets Analyzer field to given value.
 `func (o *MetaProperty) HasAnalyzer() bool`
 
 HasAnalyzer returns a boolean if a field has been set.
+
+### GetFields
+
+`func (o *MetaProperty) GetFields() map[string]MetaProperty`
+
+GetFields returns the Fields field if non-nil, zero value otherwise.
+
+### GetFieldsOk
+
+`func (o *MetaProperty) GetFieldsOk() (*map[string]MetaProperty, bool)`
+
+GetFieldsOk returns a tuple with the Fields field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFields
+
+`func (o *MetaProperty) SetFields(v map[string]MetaProperty)`
+
+SetFields sets Fields field to given value.
+
+### HasFields
+
+`func (o *MetaProperty) HasFields() bool`
+
+HasFields returns a boolean if a field has been set.
 
 ### GetFormat
 
@@ -232,6 +259,31 @@ SetStore sets Store field to given value.
 `func (o *MetaProperty) HasStore() bool`
 
 HasStore returns a boolean if a field has been set.
+
+### GetTimeZone
+
+`func (o *MetaProperty) GetTimeZone() string`
+
+GetTimeZone returns the TimeZone field if non-nil, zero value otherwise.
+
+### GetTimeZoneOk
+
+`func (o *MetaProperty) GetTimeZoneOk() (*string, bool)`
+
+GetTimeZoneOk returns a tuple with the TimeZone field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTimeZone
+
+`func (o *MetaProperty) SetTimeZone(v string)`
+
+SetTimeZone sets TimeZone field to given value.
+
+### HasTimeZone
+
+`func (o *MetaProperty) HasTimeZone() bool`
+
+HasTimeZone returns a boolean if a field has been set.
 
 ### GetType
 

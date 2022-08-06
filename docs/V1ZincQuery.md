@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Aggs** | Pointer to [**map[string]V1AggregationParams**](V1AggregationParams.md) |  | [optional] 
 **Explain** | Pointer to **bool** |  | [optional] 
 **From** | Pointer to **int32** |  | [optional] 
-**Highlight** | Pointer to [**V1QueryHighlight**](V1QueryHighlight.md) |  | [optional] 
+**Highlight** | Pointer to [**MetaHighlight**](MetaHighlight.md) |  | [optional] 
 **MaxResults** | Pointer to **int32** |  | [optional] 
 **Query** | Pointer to [**V1QueryParams**](V1QueryParams.md) |  | [optional] 
 **SearchType** | Pointer to **string** | SearchType is the type of search to perform. Can be match, match_phrase, query_string, etc | [optional] 
@@ -135,20 +135,20 @@ HasFrom returns a boolean if a field has been set.
 
 ### GetHighlight
 
-`func (o *V1ZincQuery) GetHighlight() V1QueryHighlight`
+`func (o *V1ZincQuery) GetHighlight() MetaHighlight`
 
 GetHighlight returns the Highlight field if non-nil, zero value otherwise.
 
 ### GetHighlightOk
 
-`func (o *V1ZincQuery) GetHighlightOk() (*V1QueryHighlight, bool)`
+`func (o *V1ZincQuery) GetHighlightOk() (*MetaHighlight, bool)`
 
 GetHighlightOk returns a tuple with the Highlight field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHighlight
 
-`func (o *V1ZincQuery) SetHighlight(v V1QueryHighlight)`
+`func (o *V1ZincQuery) SetHighlight(v MetaHighlight)`
 
 SetHighlight sets Highlight field to given value.
 

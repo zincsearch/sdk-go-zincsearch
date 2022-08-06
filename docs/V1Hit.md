@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **Score** | Pointer to **float32** |  | [optional] 
 **Source** | Pointer to **map[string]interface{}** |  | [optional] 
 **Type** | Pointer to **string** |  | [optional] 
+**Highlight** | Pointer to **map[string]interface{}** |  | [optional] 
 
 ## Methods
 
@@ -179,6 +180,31 @@ SetType sets Type field to given value.
 `func (o *V1Hit) HasType() bool`
 
 HasType returns a boolean if a field has been set.
+
+### GetHighlight
+
+`func (o *V1Hit) GetHighlight() map[string]interface{}`
+
+GetHighlight returns the Highlight field if non-nil, zero value otherwise.
+
+### GetHighlightOk
+
+`func (o *V1Hit) GetHighlightOk() (*map[string]interface{}, bool)`
+
+GetHighlightOk returns a tuple with the Highlight field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHighlight
+
+`func (o *V1Hit) SetHighlight(v map[string]interface{})`
+
+SetHighlight sets Highlight field to given value.
+
+### HasHighlight
+
+`func (o *V1Hit) HasHighlight() bool`
+
+HasHighlight returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

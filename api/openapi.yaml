@@ -9,7 +9,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
   title: Zinc Search engine API
-  version: 0.2.4
+  version: 0.2.7
 servers:
 - url: http://localhost:4080/
 - url: https://localhost:4080/
@@ -70,17 +70,89 @@ paths:
       tags:
       - Document
       x-codegen-request-body-name: query
-  /api/index:
-    get:
-      operationId: List
+  /api/_bulkv2:
+    post:
+      operationId: Bulkv2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.JSONIngest'
+        description: Query
+        required: true
       responses:
         "200":
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/core.Index'
-                type: array
+                $ref: '#/components/schemas/meta.HTTPResponseRecordCount'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Bulkv2 documents
+      tags:
+      - Document
+      x-codegen-request-body-name: query
+  /api/index:
+    get:
+      operationId: List
+      parameters:
+      - description: page num
+        explode: true
+        in: query
+        name: page_num
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: page size
+        explode: true
+        in: query
+        name: page_size
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: sort by
+        explode: true
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: desc
+        explode: true
+        in: query
+        name: desc
+        required: false
+        schema:
+          type: boolean
+        style: form
+      - description: name
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/index.IndexListResponse'
           description: OK
       summary: List indexes
       tags:
@@ -110,7 +182,7 @@ paths:
       summary: Create index
       tags:
       - Index
-      x-codegen-request-body-name: index
+      x-codegen-request-body-name: data
   /api/index/{index}:
     delete:
       operationId: Delete
@@ -145,6 +217,33 @@ paths:
       summary: Delete index
       tags:
       - Index
+    head:
+      operationId: Exists
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: Not Found
+      summary: Checks if the index exists
+      tags:
+      - Index
   /api/index/{index}/refresh:
     post:
       operationId: Refresh
@@ -171,6 +270,30 @@ paths:
                 $ref: '#/components/schemas/meta.HTTPResponseError'
           description: Bad Request
       summary: Resfresh index
+      tags:
+      - Index
+  /api/index_name:
+    get:
+      operationId: IndexNameList
+      parameters:
+      - description: IndexName
+        explode: true
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: OK
+      summary: List index Name
       tags:
       - Index
   /api/login:
@@ -551,6 +674,48 @@ paths:
       tags:
       - Index
       x-codegen-request-body-name: mapping
+  /api/{index}/_multi:
+    post:
+      operationId: Multi
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseRecordCount'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Internal Server Error
+      summary: Multi documents
+      tags:
+      - Document
+      x-codegen-request-body-name: query
   /api/{index}/_search:
     post:
       operationId: SearchV1
@@ -897,6 +1062,97 @@ paths:
       tags:
       - Search
       x-codegen-request-body-name: query
+  /es/{index}:
+    head:
+      operationId: EsExists
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: Not Found
+      summary: Checks if the index exists for compatible ES
+      tags:
+      - Index
+    put:
+      operationId: ESCreateIndex
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/meta.IndexSimple'
+        description: Index data
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: Bad Request
+      summary: Create index for compatible ES
+      tags:
+      - Index
+      x-codegen-request-body-name: data
+  /es/{index}/_mapping:
+    get:
+      operationId: ESGetMapping
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponse'
+          description: Bad Request
+      summary: Get index mappings for compatible ES
+      tags:
+      - Index
   /es/{index}/_search:
     post:
       operationId: Search
@@ -1000,92 +1256,6 @@ components:
           type: string
       type: object
     core.Index:
-      example:
-        storage_type: storage_type
-        settings:
-          number_of_shards: 5
-          analysis:
-            filter: "{}"
-            char_filter: "{}"
-            analyzer:
-              key:
-                filter:
-                - filter
-                - filter
-                char_filter:
-                - char_filter
-                - char_filter
-                lowercase: true
-                pattern: pattern
-                token_filter:
-                - token_filter
-                - token_filter
-                type: type
-                stopwords:
-                - stopwords
-                - stopwords
-                tokenizer: tokenizer
-            token_filter: "{}"
-            tokenizer: "{}"
-          number_of_replicas: 5
-        shards:
-        - doc_time_max: 9
-          doc_num: 7
-          storage_size: 4
-          doc_time_min: 3
-          id: 2
-        - doc_time_max: 9
-          doc_num: 7
-          storage_size: 4
-          doc_time_min: 3
-          id: 2
-        mappings:
-          properties:
-            key:
-              search_analyzer: search_analyzer
-              analyzer: analyzer
-              aggregatable: true
-              format: format
-              index: true
-              highlightable: true
-              sortable: true
-              store: true
-              type: type
-        doc_time_max: 6
-        doc_num: 0
-        name: name
-        storage_size: 7
-        update_at: update_at
-        doc_time_min: 1
-        create_at: create_at
-        shard_num: 2
-      properties:
-        create_at:
-          type: string
-        doc_num:
-          type: integer
-        doc_time_max:
-          type: integer
-        doc_time_min:
-          type: integer
-        mappings:
-          $ref: '#/components/schemas/meta.Mappings'
-        name:
-          type: string
-        settings:
-          $ref: '#/components/schemas/meta.IndexSettings'
-        shard_num:
-          type: integer
-        shards:
-          items:
-            $ref: '#/components/schemas/meta.IndexShard'
-          type: array
-        storage_size:
-          type: integer
-        storage_type:
-          type: string
-        update_at:
-          type: string
       type: object
     index.AnalyzeResponse:
       example:
@@ -1129,6 +1299,23 @@ components:
           type: string
         type:
           type: string
+      type: object
+    index.IndexListResponse:
+      example:
+        page:
+          total: 1
+          page_num: 0
+          page_size: 6
+        list:
+        - null
+        - null
+      properties:
+        list:
+          items:
+            $ref: '#/components/schemas/core.Index'
+          type: array
+        page:
+          $ref: '#/components/schemas/meta.Page'
       type: object
     meta.AggregationAutoDateHistogram:
       properties:
@@ -1624,7 +1811,7 @@ components:
       type: object
     meta.IndexSettings:
       example:
-        number_of_shards: 5
+        number_of_shards: 1
         analysis:
           filter: "{}"
           char_filter: "{}"
@@ -1648,32 +1835,13 @@ components:
               tokenizer: tokenizer
           token_filter: "{}"
           tokenizer: "{}"
-        number_of_replicas: 5
+        number_of_replicas: 6
       properties:
         analysis:
           $ref: '#/components/schemas/meta.IndexAnalysis'
         number_of_replicas:
           type: integer
         number_of_shards:
-          type: integer
-      type: object
-    meta.IndexShard:
-      example:
-        doc_time_max: 9
-        doc_num: 7
-        storage_size: 4
-        doc_time_min: 3
-        id: 2
-      properties:
-        doc_num:
-          type: integer
-        doc_time_max:
-          type: integer
-        doc_time_min:
-          type: integer
-        id:
-          type: integer
-        storage_size:
           type: integer
       type: object
     meta.IndexSimple:
@@ -1685,6 +1853,8 @@ components:
           type: string
         settings:
           $ref: '#/components/schemas/meta.IndexSettings'
+        shard_num:
+          type: integer
         storage_type:
           type: string
       type: object
@@ -1692,7 +1862,7 @@ components:
       example:
         template:
           settings:
-            number_of_shards: 5
+            number_of_shards: 1
             analysis:
               filter: "{}"
               char_filter: "{}"
@@ -1716,7 +1886,7 @@ components:
                   tokenizer: tokenizer
               token_filter: "{}"
               tokenizer: "{}"
-            number_of_replicas: 5
+            number_of_replicas: 6
           mappings:
             properties:
               key:
@@ -1728,6 +1898,9 @@ components:
                 highlightable: true
                 sortable: true
                 store: true
+                fields:
+                  key: null
+                time_zone: time_zone
                 type: type
         updated_at: updated_at
         created_at: created_at
@@ -1750,6 +1923,16 @@ components:
         updated_at:
           type: string
       type: object
+    meta.JSONIngest:
+      properties:
+        index:
+          type: string
+        records:
+          items:
+            properties: {}
+            type: object
+          type: array
+      type: object
     meta.Mappings:
       example:
         properties:
@@ -1762,6 +1945,9 @@ components:
             highlightable: true
             sortable: true
             store: true
+            fields:
+              key: null
+            time_zone: time_zone
             type: type
       properties:
         properties:
@@ -1839,6 +2025,19 @@ components:
             \ bool_prefix"
           type: string
       type: object
+    meta.Page:
+      example:
+        total: 1
+        page_num: 0
+        page_size: 6
+      properties:
+        page_num:
+          type: integer
+        page_size:
+          type: integer
+        total:
+          type: integer
+      type: object
     meta.PrefixQuery:
       properties:
         boost:
@@ -1858,12 +2057,25 @@ components:
         highlightable: true
         sortable: true
         store: true
+        fields:
+          key: null
+        time_zone: time_zone
         type: type
       properties:
         aggregatable:
           type: boolean
         analyzer:
           type: string
+        fields:
+          additionalProperties:
+            $ref: '#/components/schemas/meta.Property'
+          description: "Fields allow the same string value to be indexed in multiple\
+            \ ways for different purposes,\nsuch as one field for search and a multi-field\
+            \ for sorting and aggregations,\nor the same string value analyzed by\
+            \ different analyzers.\nIf the Fields property is defined within a sub-field,\
+            \ it will be ignored.\n\nCurrently, only \"text\" fields support the Fields\
+            \ parameter."
+          type: object
         format:
           description: date format yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis
           type: string
@@ -1877,6 +2089,9 @@ components:
           type: boolean
         store:
           type: boolean
+        time_zone:
+          description: date format time_zone
+          type: string
         type:
           description: "text, keyword, date, numeric, boolean, geo_point"
           type: string
@@ -2104,7 +2319,7 @@ components:
         index_template:
           template:
             settings:
-              number_of_shards: 5
+              number_of_shards: 1
               analysis:
                 filter: "{}"
                 char_filter: "{}"
@@ -2128,7 +2343,7 @@ components:
                     tokenizer: tokenizer
                 token_filter: "{}"
                 tokenizer: "{}"
-              number_of_replicas: 5
+              number_of_replicas: 6
             mappings:
               properties:
                 key:
@@ -2140,6 +2355,9 @@ components:
                   highlightable: true
                   sortable: true
                   store: true
+                  fields:
+                    key: null
+                  time_zone: time_zone
                   type: type
           updated_at: updated_at
           created_at: created_at
@@ -2157,7 +2375,7 @@ components:
     meta.TemplateTemplate:
       example:
         settings:
-          number_of_shards: 5
+          number_of_shards: 1
           analysis:
             filter: "{}"
             char_filter: "{}"
@@ -2181,7 +2399,7 @@ components:
                 tokenizer: tokenizer
             token_filter: "{}"
             tokenizer: "{}"
-          number_of_replicas: 5
+          number_of_replicas: 6
         mappings:
           properties:
             key:
@@ -2193,6 +2411,9 @@ components:
               highlightable: true
               sortable: true
               store: true
+              fields:
+                key: null
+              time_zone: time_zone
               type: type
       properties:
         mappings:
@@ -2385,6 +2606,7 @@ components:
       type: object
     v1.Hit:
       example:
+        highlight: "{}"
         '@timestamp': '@timestamp'
         _index: _index
         _type: _type
@@ -2404,17 +2626,22 @@ components:
           type: object
         _type:
           type: string
+        highlight:
+          properties: {}
+          type: object
       type: object
     v1.Hits:
       example:
         hits:
-        - '@timestamp': '@timestamp'
+        - highlight: "{}"
+          '@timestamp': '@timestamp'
           _index: _index
           _type: _type
           _source: "{}"
           _id: _id
           _score: 6.027456183070403
-        - '@timestamp': '@timestamp'
+        - highlight: "{}"
+          '@timestamp': '@timestamp'
           _index: _index
           _type: _type
           _source: "{}"
@@ -2432,15 +2659,6 @@ components:
           type: number
         total:
           $ref: '#/components/schemas/v1.Total'
-      type: object
-    v1.QueryHighlight:
-      properties:
-        fields:
-          items:
-            type: string
-          type: array
-        style:
-          type: string
       type: object
     v1.QueryParams:
       properties:
@@ -2466,13 +2684,15 @@ components:
       example:
         hits:
           hits:
-          - '@timestamp': '@timestamp'
+          - highlight: "{}"
+            '@timestamp': '@timestamp'
             _index: _index
             _type: _type
             _source: "{}"
             _id: _id
             _score: 6.027456183070403
-          - '@timestamp': '@timestamp'
+          - highlight: "{}"
+            '@timestamp': '@timestamp'
             _index: _index
             _type: _type
             _source: "{}"
@@ -2534,7 +2754,7 @@ components:
         from:
           type: integer
         highlight:
-          $ref: '#/components/schemas/v1.QueryHighlight'
+          $ref: '#/components/schemas/meta.Highlight'
         max_results:
           type: integer
         query:

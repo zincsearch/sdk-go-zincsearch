@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 **Mappings** | Pointer to **map[string]interface{}** |  | [optional] 
 **Name** | Pointer to **string** |  | [optional] 
 **Settings** | Pointer to [**MetaIndexSettings**](MetaIndexSettings.md) |  | [optional] 
+**ShardNum** | Pointer to **int32** |  | [optional] 
 **StorageType** | Pointer to **string** |  | [optional] 
 
 ## Methods
@@ -102,6 +103,31 @@ SetSettings sets Settings field to given value.
 `func (o *MetaIndexSimple) HasSettings() bool`
 
 HasSettings returns a boolean if a field has been set.
+
+### GetShardNum
+
+`func (o *MetaIndexSimple) GetShardNum() int32`
+
+GetShardNum returns the ShardNum field if non-nil, zero value otherwise.
+
+### GetShardNumOk
+
+`func (o *MetaIndexSimple) GetShardNumOk() (*int32, bool)`
+
+GetShardNumOk returns a tuple with the ShardNum field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetShardNum
+
+`func (o *MetaIndexSimple) SetShardNum(v int32)`
+
+SetShardNum sets ShardNum field to given value.
+
+### HasShardNum
+
+`func (o *MetaIndexSimple) HasShardNum() bool`
+
+HasShardNum returns a boolean if a field has been set.
 
 ### GetStorageType
 

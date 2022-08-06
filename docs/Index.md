@@ -10,9 +10,14 @@ Method | HTTP request | Description
 [**CreateTemplate**](Index.md#CreateTemplate) | **Post** /es/_index_template | Create update index template
 [**Delete**](Index.md#Delete) | **Delete** /api/index/{index} | Delete index
 [**DeleteTemplate**](Index.md#DeleteTemplate) | **Delete** /es/_index_template/{name} | Delete template
+[**ESCreateIndex**](Index.md#ESCreateIndex) | **Put** /es/{index} | Create index for compatible ES
+[**ESGetMapping**](Index.md#ESGetMapping) | **Get** /es/{index}/_mapping | Get index mappings for compatible ES
+[**EsExists**](Index.md#EsExists) | **Head** /es/{index} | Checks if the index exists for compatible ES
+[**Exists**](Index.md#Exists) | **Head** /api/index/{index} | Checks if the index exists
 [**GetMapping**](Index.md#GetMapping) | **Get** /api/{index}/_mapping | Get index mappings
 [**GetSettings**](Index.md#GetSettings) | **Get** /api/{index}/_settings | Get index settings
 [**GetTemplate**](Index.md#GetTemplate) | **Get** /es/_index_template/{name} | Get index template
+[**IndexNameList**](Index.md#IndexNameList) | **Get** /api/index_name | List index Name
 [**List**](Index.md#List) | **Get** /api/index | List indexes
 [**ListTemplates**](Index.md#ListTemplates) | **Get** /es/_index_template | List index teplates
 [**Refresh**](Index.md#Refresh) | **Post** /api/index/{index}/refresh | Resfresh index
@@ -158,7 +163,7 @@ Name | Type | Description  | Notes
 
 ## Create
 
-> MetaHTTPResponseIndex Create(ctx).Index(index).Execute()
+> MetaHTTPResponseIndex Create(ctx).Data(data).Execute()
 
 Create index
 
@@ -175,11 +180,11 @@ import (
 )
 
 func main() {
-    index := *client.NewMetaIndexSimple() // MetaIndexSimple | Index data
+    data := *client.NewMetaIndexSimple() // MetaIndexSimple | Index data
 
     configuration := client.NewConfiguration()
     apiClient := client.NewAPIClient(configuration)
-    resp, r, err := apiClient.Index.Create(context.Background()).Index(index).Execute()
+    resp, r, err := apiClient.Index.Create(context.Background()).Data(data).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `Index.Create``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -200,7 +205,7 @@ Other parameters are passed through a pointer to a apiCreateRequest struct via t
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **index** | [**MetaIndexSimple**](MetaIndexSimple.md) | Index data | 
+ **data** | [**MetaIndexSimple**](MetaIndexSimple.md) | Index data | 
 
 ### Return type
 
@@ -396,6 +401,280 @@ Name | Type | Description  | Notes
 ### Other Parameters
 
 Other parameters are passed through a pointer to a apiDeleteTemplateRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+### Return type
+
+[**MetaHTTPResponse**](MetaHTTPResponse.md)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## ESCreateIndex
+
+> map[string]interface{} ESCreateIndex(ctx, index).Data(data).Execute()
+
+Create index for compatible ES
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    index := "index_example" // string | Index
+    data := *client.NewMetaIndexSimple() // MetaIndexSimple | Index data
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.ESCreateIndex(context.Background(), index).Data(data).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.ESCreateIndex``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `ESCreateIndex`: map[string]interface{}
+    fmt.Fprintf(os.Stdout, "Response from `Index.ESCreateIndex`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**index** | **string** | Index | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiESCreateIndexRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **data** | [**MetaIndexSimple**](MetaIndexSimple.md) | Index data | 
+
+### Return type
+
+**map[string]interface{}**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## ESGetMapping
+
+> map[string]interface{} ESGetMapping(ctx, index).Execute()
+
+Get index mappings for compatible ES
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    index := "index_example" // string | Index
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.ESGetMapping(context.Background(), index).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.ESGetMapping``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `ESGetMapping`: map[string]interface{}
+    fmt.Fprintf(os.Stdout, "Response from `Index.ESGetMapping`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**index** | **string** | Index | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiESGetMappingRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+### Return type
+
+**map[string]interface{}**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## EsExists
+
+> MetaHTTPResponse EsExists(ctx, index).Execute()
+
+Checks if the index exists for compatible ES
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    index := "index_example" // string | Index
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.EsExists(context.Background(), index).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.EsExists``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `EsExists`: MetaHTTPResponse
+    fmt.Fprintf(os.Stdout, "Response from `Index.EsExists`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**index** | **string** | Index | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiEsExistsRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+### Return type
+
+[**MetaHTTPResponse**](MetaHTTPResponse.md)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## Exists
+
+> MetaHTTPResponse Exists(ctx, index).Execute()
+
+Checks if the index exists
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    index := "index_example" // string | Index
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.Exists(context.Background(), index).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.Exists``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `Exists`: MetaHTTPResponse
+    fmt.Fprintf(os.Stdout, "Response from `Index.Exists`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**index** | **string** | Index | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiExistsRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes
@@ -624,9 +903,73 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
+## IndexNameList
+
+> []string IndexNameList(ctx).Name(name).Execute()
+
+List index Name
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    name := "name_example" // string | IndexName (optional)
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.IndexNameList(context.Background()).Name(name).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.IndexNameList``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `IndexNameList`: []string
+    fmt.Fprintf(os.Stdout, "Response from `Index.IndexNameList`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiIndexNameListRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **name** | **string** | IndexName | 
+
+### Return type
+
+**[]string**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## List
 
-> []CoreIndex List(ctx).Execute()
+> IndexIndexListResponse List(ctx).PageNum(pageNum).PageSize(pageSize).SortBy(sortBy).Desc(desc).Name(name).Execute()
 
 List indexes
 
@@ -643,31 +986,44 @@ import (
 )
 
 func main() {
+    pageNum := int32(56) // int32 | page num (optional)
+    pageSize := int32(56) // int32 | page size (optional)
+    sortBy := "sortBy_example" // string | sort by (optional)
+    desc := true // bool | desc (optional)
+    name := "name_example" // string | name (optional)
 
     configuration := client.NewConfiguration()
     apiClient := client.NewAPIClient(configuration)
-    resp, r, err := apiClient.Index.List(context.Background()).Execute()
+    resp, r, err := apiClient.Index.List(context.Background()).PageNum(pageNum).PageSize(pageSize).SortBy(sortBy).Desc(desc).Name(name).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `Index.List``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `List`: []CoreIndex
+    // response from `List`: IndexIndexListResponse
     fmt.Fprintf(os.Stdout, "Response from `Index.List`: %v\n", resp)
 }
 ```
 
 ### Path Parameters
 
-This endpoint does not need any parameter.
+
 
 ### Other Parameters
 
 Other parameters are passed through a pointer to a apiListRequest struct via the builder pattern
 
 
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **pageNum** | **int32** | page num | 
+ **pageSize** | **int32** | page size | 
+ **sortBy** | **string** | sort by | 
+ **desc** | **bool** | desc | 
+ **name** | **string** | name | 
+
 ### Return type
 
-[**[]CoreIndex**](CoreIndex.md)
+[**IndexIndexListResponse**](IndexIndexListResponse.md)
 
 ### Authorization
 
