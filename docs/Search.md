@@ -4,10 +4,81 @@ All URIs are relative to *http://localhost:4080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**DeleteByQuery**](Search.md#DeleteByQuery) | **Post** /es/{index}/_delete_by_query | Searches the index and deletes all matched documents
 [**MSearch**](Search.md#MSearch) | **Post** /es/_msearch | Search V2 MultipleSearch for compatible ES
 [**Search**](Search.md#Search) | **Post** /es/{index}/_search | Search V2 DSL for compatible ES
 [**SearchV1**](Search.md#SearchV1) | **Post** /api/{index}/_search | Search V1
 
+
+
+## DeleteByQuery
+
+> MetaHTTPResponseDeleteByQuery DeleteByQuery(ctx, index).Query(query).Execute()
+
+Searches the index and deletes all matched documents
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    index := "index_example" // string | Index
+    query := *client.NewMetaZincQuery() // MetaZincQuery | Query
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Search.DeleteByQuery(context.Background(), index).Query(query).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Search.DeleteByQuery``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `DeleteByQuery`: MetaHTTPResponseDeleteByQuery
+    fmt.Fprintf(os.Stdout, "Response from `Search.DeleteByQuery`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**index** | **string** | Index | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiDeleteByQueryRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **query** | [**MetaZincQuery**](MetaZincQuery.md) | Query | 
+
+### Return type
+
+[**MetaHTTPResponseDeleteByQuery**](MetaHTTPResponseDeleteByQuery.md)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
 
 
 ## MSearch
@@ -146,7 +217,7 @@ Name | Type | Description  | Notes
 
 ## SearchV1
 
-> V1SearchResponse SearchV1(ctx, index).Query(query).Execute()
+> MetaSearchResponse SearchV1(ctx, index).Query(query).Execute()
 
 Search V1
 
@@ -173,7 +244,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `Search.SearchV1``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `SearchV1`: V1SearchResponse
+    // response from `SearchV1`: MetaSearchResponse
     fmt.Fprintf(os.Stdout, "Response from `Search.SearchV1`: %v\n", resp)
 }
 ```
@@ -198,7 +269,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**V1SearchResponse**](V1SearchResponse.md)
+[**MetaSearchResponse**](MetaSearchResponse.md)
 
 ### Authorization
 

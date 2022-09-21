@@ -4,6 +4,7 @@ All URIs are relative to *http://localhost:4080*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**AddOrRemoveESAlias**](Index.md#AddOrRemoveESAlias) | **Post** /es/_aliases | Add or remove index alias for compatible ES
 [**Analyze**](Index.md#Analyze) | **Post** /api/_analyze | Analyze
 [**AnalyzeIndex**](Index.md#AnalyzeIndex) | **Post** /api/{index}/_analyze | Analyze
 [**Create**](Index.md#Create) | **Post** /api/index | Create index
@@ -14,6 +15,8 @@ Method | HTTP request | Description
 [**ESGetMapping**](Index.md#ESGetMapping) | **Get** /es/{index}/_mapping | Get index mappings for compatible ES
 [**EsExists**](Index.md#EsExists) | **Head** /es/{index} | Checks if the index exists for compatible ES
 [**Exists**](Index.md#Exists) | **Head** /api/index/{index} | Checks if the index exists
+[**GetESAliases**](Index.md#GetESAliases) | **Get** /es/{target}/_alias/{target_alias} | Get index alias for compatible ES
+[**GetIndex**](Index.md#GetIndex) | **Get** /api/index/{index} | Get index metadata
 [**GetMapping**](Index.md#GetMapping) | **Get** /api/{index}/_mapping | Get index mappings
 [**GetSettings**](Index.md#GetSettings) | **Get** /api/{index}/_settings | Get index settings
 [**GetTemplate**](Index.md#GetTemplate) | **Get** /es/_index_template/{name} | Get index template
@@ -25,6 +28,65 @@ Method | HTTP request | Description
 [**SetSettings**](Index.md#SetSettings) | **Put** /api/{index}/_settings | Set index Settings
 [**UpdateTemplate**](Index.md#UpdateTemplate) | **Put** /es/_index_template/{name} | Create update index template
 
+
+
+## AddOrRemoveESAlias
+
+> map[string]interface{} AddOrRemoveESAlias(ctx).Execute()
+
+Add or remove index alias for compatible ES
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.AddOrRemoveESAlias(context.Background()).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.AddOrRemoveESAlias``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `AddOrRemoveESAlias`: map[string]interface{}
+    fmt.Fprintf(os.Stdout, "Response from `Index.AddOrRemoveESAlias`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiAddOrRemoveESAliasRequest struct via the builder pattern
+
+
+### Return type
+
+**map[string]interface{}**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
 
 
 ## Analyze
@@ -684,6 +746,145 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**MetaHTTPResponse**](MetaHTTPResponse.md)
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## GetESAliases
+
+> map[string]interface{} GetESAliases(ctx, target, targetAlias).Execute()
+
+Get index alias for compatible ES
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    target := "target_example" // string | Target Index
+    targetAlias := "targetAlias_example" // string | Target Alias
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.GetESAliases(context.Background(), target, targetAlias).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.GetESAliases``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `GetESAliases`: map[string]interface{}
+    fmt.Fprintf(os.Stdout, "Response from `Index.GetESAliases`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**target** | **string** | Target Index | 
+**targetAlias** | **string** | Target Alias | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetESAliasesRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+
+### Return type
+
+**map[string]interface{}**
+
+### Authorization
+
+[basicAuth](../README.md#basicAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## GetIndex
+
+> map[string]interface{} GetIndex(ctx, index).Execute()
+
+Get index metadata
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    client "github.com/zinclabs/sdk-go-zincsearch"
+)
+
+func main() {
+    index := "index_example" // string | Index
+
+    configuration := client.NewConfiguration()
+    apiClient := client.NewAPIClient(configuration)
+    resp, r, err := apiClient.Index.GetIndex(context.Background(), index).Execute()
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error when calling `Index.GetIndex``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `GetIndex`: map[string]interface{}
+    fmt.Fprintf(os.Stdout, "Response from `Index.GetIndex`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**index** | **string** | Index | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetIndexRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+### Return type
+
+**map[string]interface{}**
 
 ### Authorization
 

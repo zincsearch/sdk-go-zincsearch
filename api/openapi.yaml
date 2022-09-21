@@ -9,7 +9,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
   title: Zinc Search engine API
-  version: 0.2.7
+  version: 0.3.3
 servers:
 - url: http://localhost:4080/
 - url: https://localhost:4080/
@@ -215,6 +215,33 @@ paths:
                 $ref: '#/components/schemas/meta.HTTPResponseError'
           description: Internal Server Error
       summary: Delete index
+      tags:
+      - Index
+    get:
+      operationId: GetIndex
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/core.Index'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Not Found
+      summary: Get index metadata
       tags:
       - Index
     head:
@@ -740,7 +767,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/v1.SearchResponse'
+                $ref: '#/components/schemas/meta.SearchResponse'
           description: OK
         "400":
           content:
@@ -871,6 +898,25 @@ paths:
       tags:
       - Document
       x-codegen-request-body-name: document
+  /es/_aliases:
+    post:
+      operationId: AddOrRemoveESAlias
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Add or remove index alias for compatible ES
+      tags:
+      - Index
   /es/_bulk:
     post:
       operationId: ESBulk
@@ -1125,6 +1171,42 @@ paths:
       tags:
       - Index
       x-codegen-request-body-name: data
+  /es/{index}/_delete_by_query:
+    post:
+      operationId: DeleteByQuery
+      parameters:
+      - description: Index
+        explode: false
+        in: path
+        name: index
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/meta.ZincQuery'
+        description: Query
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseDeleteByQuery'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Searches the index and deletes all matched documents
+      tags:
+      - Search
+      x-codegen-request-body-name: query
   /es/{index}/_mapping:
     get:
       operationId: ESGetMapping
@@ -1189,6 +1271,42 @@ paths:
       tags:
       - Search
       x-codegen-request-body-name: query
+  /es/{target}/_alias/{target_alias}:
+    get:
+      operationId: GetESAliases
+      parameters:
+      - description: Target Index
+        explode: false
+        in: path
+        name: target
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Target Alias
+        explode: false
+        in: path
+        name: target_alias
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/meta.HTTPResponseError'
+          description: Bad Request
+      summary: Get index alias for compatible ES
+      tags:
+      - Index
   /healthz:
     get:
       operationId: Healthz
@@ -1603,6 +1721,52 @@ components:
         message:
           type: string
       type: object
+    meta.HTTPResponseDeleteByQuery:
+      example:
+        batches: 0
+        retries:
+          search: 2
+          bulk: 5
+        throttled_millis: 7
+        took: 3
+        total: 2
+        deleted: 6
+        failures:
+        - failures
+        - failures
+        noops: 1
+        requests_per_second: 5
+        version_conflicts: 4
+        throttled_until_millis: 9
+        time_out: true
+      properties:
+        batches:
+          type: integer
+        deleted:
+          type: integer
+        failures:
+          items:
+            type: string
+          type: array
+        noops:
+          type: integer
+        requests_per_second:
+          type: integer
+        retries:
+          $ref: '#/components/schemas/meta.HttpRetriesResponse'
+        throttled_millis:
+          type: integer
+        throttled_until_millis:
+          type: integer
+        time_out:
+          type: boolean
+        took:
+          type: integer
+        total:
+          type: integer
+        version_conflicts:
+          type: integer
+      type: object
     meta.HTTPResponseDocument:
       example:
         index: index
@@ -1751,6 +1915,16 @@ components:
           type: number
         total:
           $ref: '#/components/schemas/meta.Total'
+      type: object
+    meta.HttpRetriesResponse:
+      example:
+        search: 2
+        bulk: 5
+      properties:
+        bulk:
+          type: integer
+        search:
+          type: integer
       type: object
     meta.IPRange:
       properties:
@@ -2069,12 +2243,13 @@ components:
         fields:
           additionalProperties:
             $ref: '#/components/schemas/meta.Property'
-          description: "Fields allow the same string value to be indexed in multiple\
-            \ ways for different purposes,\nsuch as one field for search and a multi-field\
-            \ for sorting and aggregations,\nor the same string value analyzed by\
-            \ different analyzers.\nIf the Fields property is defined within a sub-field,\
-            \ it will be ignored.\n\nCurrently, only \"text\" fields support the Fields\
-            \ parameter."
+          description: |-
+            Fields allow the same string value to be indexed in multiple ways for different purposes,
+            such as one field for search and a multi-field for sorting and aggregations,
+            or the same string value analyzed by different analyzers.
+            If the Fields property is defined within a sub-field, it will be ignored.
+
+            Currently, only "text" fields support the Fields parameter.
           type: object
         format:
           description: date format yyyy-MM-dd HH:mm:ss || yyyy-MM-dd || epoch_millis
@@ -2529,22 +2704,6 @@ components:
         track_total_hits:
           type: boolean
       type: object
-    v1.AggregationBucket:
-      example:
-        doc_count: 0
-        aggregations:
-          key: null
-        key: key
-      properties:
-        aggregations:
-          additionalProperties:
-            $ref: '#/components/schemas/v1.AggregationResponse'
-          type: object
-        doc_count:
-          type: integer
-        key:
-          type: string
-      type: object
     v1.AggregationDateRange:
       properties:
         from:
@@ -2584,82 +2743,6 @@ components:
             for weighted average aggregation
           type: string
       type: object
-    v1.AggregationResponse:
-      example:
-        buckets:
-        - doc_count: 0
-          aggregations:
-            key: null
-          key: key
-        - doc_count: 0
-          aggregations:
-            key: null
-          key: key
-        value: "{}"
-      properties:
-        buckets:
-          items:
-            $ref: '#/components/schemas/v1.AggregationBucket'
-          type: array
-        value:
-          type: object
-      type: object
-    v1.Hit:
-      example:
-        highlight: "{}"
-        '@timestamp': '@timestamp'
-        _index: _index
-        _type: _type
-        _source: "{}"
-        _id: _id
-        _score: 6.027456183070403
-      properties:
-        '@timestamp':
-          type: string
-        _id:
-          type: string
-        _index:
-          type: string
-        _score:
-          type: number
-        _source:
-          type: object
-        _type:
-          type: string
-        highlight:
-          properties: {}
-          type: object
-      type: object
-    v1.Hits:
-      example:
-        hits:
-        - highlight: "{}"
-          '@timestamp': '@timestamp'
-          _index: _index
-          _type: _type
-          _source: "{}"
-          _id: _id
-          _score: 6.027456183070403
-        - highlight: "{}"
-          '@timestamp': '@timestamp'
-          _index: _index
-          _type: _type
-          _source: "{}"
-          _id: _id
-          _score: 6.027456183070403
-        total:
-          value: 5
-        max_score: 1.4658129805029452
-      properties:
-        hits:
-          items:
-            $ref: '#/components/schemas/v1.Hit'
-          type: array
-        max_score:
-          type: number
-        total:
-          $ref: '#/components/schemas/v1.Total'
-      type: object
     v1.QueryParams:
       properties:
         boost:
@@ -2679,65 +2762,6 @@ components:
               type: string
             type: array
           type: array
-      type: object
-    v1.SearchResponse:
-      example:
-        hits:
-          hits:
-          - highlight: "{}"
-            '@timestamp': '@timestamp'
-            _index: _index
-            _type: _type
-            _source: "{}"
-            _id: _id
-            _score: 6.027456183070403
-          - highlight: "{}"
-            '@timestamp': '@timestamp'
-            _index: _index
-            _type: _type
-            _source: "{}"
-            _id: _id
-            _score: 6.027456183070403
-          total:
-            value: 5
-          max_score: 1.4658129805029452
-        took: 5
-        timed_out: true
-        error: error
-        aggregations:
-          key:
-            buckets:
-            - doc_count: 0
-              aggregations:
-                key: null
-              key: key
-            - doc_count: 0
-              aggregations:
-                key: null
-              key: key
-            value: "{}"
-      properties:
-        aggregations:
-          additionalProperties:
-            $ref: '#/components/schemas/v1.AggregationResponse'
-          type: object
-        error:
-          type: string
-        hits:
-          $ref: '#/components/schemas/v1.Hits'
-        timed_out:
-          type: boolean
-        took:
-          description: Time it took to generate the response
-          type: integer
-      type: object
-    v1.Total:
-      example:
-        value: 5
-      properties:
-        value:
-          description: Count of documents returned
-          type: integer
       type: object
     v1.ZincQuery:
       properties:
