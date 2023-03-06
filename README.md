@@ -1,4 +1,4 @@
-# Go API client for client
+# Go SDK Client for ZincSearch
 
 Zinc Search engine API documents https://docs.zincsearch.com
 
